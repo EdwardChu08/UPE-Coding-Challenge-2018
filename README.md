@@ -3,21 +3,20 @@
 This is my solution for UCLA's UPE Coding Challenge 2018. 
 
 ## Dependencies:
-	logging
-	requests
+requests
 
 ## Installing dependencies:
 ```bash
-	make init
+make init
 ```
 ## Run script:
 ```bash
-	python3 main.py
+python3 main.py
 ```
 
 ## Clean log folder and .pyc files
 ```bash
-	make clean
+make clean
 ```
 
 
