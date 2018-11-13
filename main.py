@@ -6,6 +6,8 @@ from datetime import datetime
 import game, config
 import numpy as np #DEBUG
 
+LOG_LEVEL = logging.DEBUG
+
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
@@ -14,7 +16,7 @@ def main():
             'logs', 
             datetime.now().strftime('%Y-%m-%d--%H-%M-%S')+'.log')
     logging.basicConfig( 
-        level=logging.DEBUG, 
+        level=LOG_LEVEL, 
         handlers=[
             logging.FileHandler(logfilename),
             logging.StreamHandler()
@@ -44,7 +46,7 @@ def main():
             mapper[current[1]][current[0]] = 7 #DEBUG
             didMove = False
 
-            print(np.matrix(mapper))
+            logging.debug(np.matrix(mapper))
             logging.debug('Current location: {}, Stack: {}'.format(str(g.get_state()['current_location']), str(stack)))
             for action in game.ACTION:
                 nextCoord = _next_coordinate(current, action)
@@ -92,8 +94,6 @@ def main():
         logging.critical('Error: Session expired!')
     elif(state['status'] == game.STATUS['FINISHED']):
         logging.info('Game finished!')
-
-
 
 def _next_coordinate(current, action):
     copy = current.copy()
