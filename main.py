@@ -41,13 +41,16 @@ def main():
             mapper.append(row)
 
         while current is not None:
+            state = g.get_state()
+            if(state['status'] == game.STATUS['NONE']):
+                break
             stack.append(current)
             visited.add(tuple(current))
             mapper[current[1]][current[0]] = 7 #DEBUG
             didMove = False
 
-            logging.debug(np.matrix(mapper))
-            logging.debug('Current location: {}, Stack: {}'.format(str(g.get_state()['current_location']), str(stack)))
+            logging.debug('\n' + str(np.matrix(mapper)))
+            logging.debug('Current location: {}, Stack: {}'.format(str(current), str(stack)))
             for action in game.ACTION:
                 nextCoord = _next_coordinate(current, action)
                 if(_in_maze(state['maze_size'], nextCoord) and tuple(nextCoord) not in visited):

@@ -3,6 +3,8 @@ Game.py
 
 '''
 import requests, json
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 STATUS = {
     'PLAYING':      'PLAYING',
@@ -12,10 +14,10 @@ STATUS = {
 }
 
 ACTION = {
-    'UP':     'UP',
     'DOWN':   'DOWN',
+    'RIGHT':  'RIGHT',
     'LEFT':   'LEFT',
-    'RIGHT':  'RIGHT'
+    'UP':     'UP'
 }
 
 RESULT = {
@@ -25,23 +27,31 @@ RESULT = {
     'END':            'END'
 }
 
+RETRIES = Retry(total=5, backoff_factor=1, status_forcelist=[ 429, 502, 503, 504 ])
+
 class Game:
     def __init__(self, server_url, uid):       
         action = '/session'
         data = {'uid': uid}
-        res = requests.post(url=server_url+action, data=data).json()
+        session = requests.Session()
+        session.mount('http://', HTTPAdapter(max_retries=RETRIES))
+        res = session.post(url=server_url+action, data=data).json()
         self.token = res['token']
         self.server_url = server_url
 
     def get_state(self):
         action = '/game'
         params = {'token': self.token}
-        res = requests.get(url=self.server_url+action, params=params).json()
-        return res
+        session = requests.Session()
+        session.mount('http://', HTTPAdapter(max_retries=RETRIES))
+        res = session.get(url=self.server_url+action, params=params)
+        return res.json()
 
     def do_action(self, gameAction):
         action = '/game'
         params = {'token': self.token}
         data = {'action': gameAction}
-        res = requests.post(url=self.server_url+action, params=params, data=data).json()
-        return res
+        session = requests.Session()
+        session.mount('http://', HTTPAdapter(max_retries=RETRIES))
+        res = session.post(url=self.server_url+action, params=params, data=data)
+        return res.json()
