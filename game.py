@@ -27,7 +27,7 @@ RESULT = {
     'END':            'END'
 }
 
-RETRIES = Retry(total=5, backoff_factor=1, status_forcelist=[ 429, 502, 503, 504 ])
+RETRIES = Retry(total=5, backoff_factor=0.3, status_forcelist=[ 429, 502, 503, 504 ])
 
 class Game:
     def __init__(self, server_url, uid):       

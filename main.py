@@ -4,9 +4,8 @@ main.py
 import logging, os
 from datetime import datetime
 import game, config
-import numpy as np #DEBUG
 
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -16,6 +15,7 @@ def main():
             'logs', 
             datetime.now().strftime('%Y-%m-%d--%H-%M-%S')+'.log')
     logging.basicConfig( 
+        format='%(asctime)s %(levelname)-8s %(message)s',
         level=LOG_LEVEL, 
         handlers=[
             logging.FileHandler(logfilename),
@@ -41,15 +41,12 @@ def main():
             mapper.append(row)
 
         while current is not None:
-            state = g.get_state()
-            if(state['status'] == game.STATUS['NONE']):
-                break
             stack.append(current)
             visited.add(tuple(current))
             mapper[current[1]][current[0]] = 7 #DEBUG
             didMove = False
 
-            logging.debug('\n' + str(np.matrix(mapper)))
+            logging.debug('\n'.join([' '.join(str(box) for box in row) for row in mapper]))
             logging.debug('Current location: {}, Stack: {}'.format(str(current), str(stack)))
             for action in game.ACTION:
                 nextCoord = _next_coordinate(current, action)
